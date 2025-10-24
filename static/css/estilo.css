@@ -316,12 +316,130 @@
     }
 
     .retangulo_branco2 {
-         background-color: white;
+        background-color: white;
         width: 940px;
         height: 250px;
         border-radius: 20px;
-        transform: translate( 8%, 240%);
+        transform: translate(8%, 240%);
         display: flex;
         justify-content: flex-start;
         align-items: center;
+    }
+
+    .acessibilidade {
+        position: fixed;
+        right: 0px;
+        bottom: 900px;
+        width: 100px;
+        height: 100px;
+        background-image: url('/static/img/acessibilidade.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        z-index: 99999;
+        border-radius: 20px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999999;
+        left: 270px;
+        top: 700px;
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .modal-conteudo {
+        background: rgba(255, 255, 255, 0.504);
+        backdrop-filter: blur(35px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 15px;
+        padding: 20px;
+        max-width: 500px;
+        margin: 100px auto;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: aparecer 0.3s ease;
+        height: 850px;
+
+    }
+
+    @keyframes aparecer {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-conteudo h2 {
+        color: #203e8b;
+        font-size: 45px;
+        margin-bottom: 60px;
+    }
+
+    .grid2 {
+        display: flex;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+
+    }
+
+
+    button {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 220px;
+        height: 90px;
+        font-size: 25px;
+        font-family: 'Arvo', serif;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    button:hover {
+        background-color: #d2dfff;
+    }
+
+    /* Botão de fechar */
+    .fechar {
+        float: right;
+        font-size: 54px;
+        cursor: pointer;
+        color: #BB2A2D;
+    }
+
+    .fechar:hover {
+        color: #BB2A2D;
+    }
+
+    .filtros {
+        font-size: 32px;
+        margin-right: 200px;
+
+    }
+
+    #btnRestaurar{
+        display: none; 
+        background-color: #203e8b;
+        color: white;
+        position: absolute;
+        bottom: 50px;
+        font-size: 30px;
+        height: 55px;
+        padding: 10px;
+        right: 30% ;
     }
