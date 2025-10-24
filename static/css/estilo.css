@@ -37,10 +37,10 @@
     }
 
     .texto1 {
-        position: fixed;
+        position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(70%, -50%);
         margin: 0;
         font-size: 66px;
         text-align: center;
@@ -53,10 +53,10 @@
 
     #total {
         margin: 190px;
-        position: fixed;
+        position: absolute;
         top: 63%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(150%, -50%);
         margin: 0;
         font-size: 96px;
         text-align: center;
@@ -65,10 +65,10 @@
 
     .botao {
         background-color: #47525E;
-        position: fixed;
+        position: absolute;
         top: 82%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(45%, -50%);
         width: 530px;
         height: 110px;
         color: white;
@@ -352,7 +352,7 @@
     }
 
     .modal-conteudo {
-        background: rgba(255, 255, 255, 0.504);
+        background: rgba(255, 255, 255, 0.693);
         backdrop-filter: blur(35px);
         -webkit-backdrop-filter: blur(15px);
         border-radius: 15px;
@@ -362,6 +362,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         animation: aparecer 0.3s ease;
         height: 850px;
+        
 
     }
 
@@ -384,7 +385,7 @@
     }
 
     .grid2 {
-        display: flex;
+        display: inline-block;
         grid-template-columns: repeat(2, 1fr);
         gap: 40px;
 
@@ -396,9 +397,9 @@
         border: none;
         border-radius: 12px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 220px;
+        width: 320px;
         height: 90px;
-        font-size: 25px;
+        font-size: 30px;
         font-family: 'Arvo', serif;
         color: #333;
         cursor: pointer;
@@ -428,18 +429,44 @@
 
     .filtros {
         font-size: 32px;
-        margin-right: 200px;
-
+        margin-top: 60px;
     }
 
-    #btnRestaurar{
-        display: none; 
+    #btnRestaurar {
+        display: none;
         background-color: #203e8b;
         color: white;
         position: absolute;
-        bottom: 50px;
+        bottom: 30px;
         font-size: 30px;
         height: 55px;
         padding: 10px;
-        right: 30% ;
+        right: 20%;
+    }
+
+    .highlight {
+        background-color: #d2dfff;
+        transition: background-color 0.3s ease;
+    }
+
+
+    .deuteranopia {
+        filter: grayscale(0.3) contrast(1.2) saturate(0.7) hue-rotate(90deg);
+        transition: filter 0.3s ease;
+    }
+
+  
+    .protanopia {
+        filter: grayscale(0.3) contrast(1.2) saturate(0.7) hue-rotate(-30deg);
+        transition: filter 0.3s ease;
+    }
+
+    
+    .tritanopia {
+        filter: grayscale(0.3) contrast(1.2) saturate(0.7) hue-rotate(180deg);
+        transition: filter 0.3s ease;
+    }
+
+    #indicadoresAcessibilidade{
+        position: fixed; top: 10px; right: 10px; display: flex; gap: 5px;
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -7,148 +7,166 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
     <title>Totem</title>
 </head>
 
 <body>
     <div class="container">
-        <h1 class="texto1">
-            Tempo Total <span class="de">de</span> Espera:
-        </h1>
-        <span id="total">00:00</span>
-        <div class="acessibilidade"></div>
+        
+        <div id="conteudo" class="conteudo">
+            <h1 class="texto1">
+                Tempo Total <span class="de">de</span> Espera:
+            </h1>
+            <span id="total">00:00</span>
+
+            <img class="relogio" src="{{ url_for('static', filename='img/relogio.png') }}" alt="Relógio">
+            <img class="mancha_amarela" src="{{ url_for('static', filename='img/mancha1.png') }}" alt="Mancha Amarela">
+            <img class="mancha_azul" src="{{ url_for('static', filename='img/mancha2.png') }}" alt="Mancha Azul">
+
+            <a href="{{ url_for('opcoes') }}" class="botao">
+                Ver por Caixas <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+
+
+
+        <div class="acessibilidade" title="Abrir menu de acessibilidade"></div>
 
         <div id="modalAcessibilidade" class="modal">
             <div class="modal-conteudo">
-                <span class="fechar">&times;</span>
+                <span class="fechar" title="Fechar">&times;</span>
                 <h2>Acessibilidades</h2>
 
                 <p class="filtros">Controle de Fonte</p>
                 <div class="grid2">
-                    <button onclick="aumentarFonte()">Tamanho de Fonte</button>
+                    <button onclick="aumentarFonte()">Aumentar Fonte</button>
                 </div>
-
 
                 <p class="filtros">Navegação do Site</p>
                 <div class="grid2">
-                    <button>Leitor de sites</button>
-                    <button>Guia de leitura</button>
+                    <button id="btnLeitor">Leitor de sites</button>
                 </div>
 
                 <p class="filtros">Controle de Cores</p>
                 <div class="grid2">
-                    <button>Modo daltônico</button>
+                    <button id="btnDaltonismo">Modo daltônico</button>
                 </div>
 
-                <button id="btnRestaurar" onclick="restaurarFonte()">
+                <button id="btnRestaurar" onclick="restaurarFonte()" style="display:none;">
                     Restaurar
                 </button>
 
             </div>
         </div>
-
-
-        <img class="relogio" src="{{ url_for('static', filename='img/relogio.png') }}" alt="relogio">
-        <img class="mancha_amarela" src="{{ url_for('static', filename='img/mancha1.png') }}" alt="Mancha Amarela">
-        <img class="mancha_azul" src="{{ url_for('static', filename='img/mancha2.png') }}" alt="Mancha Azul">
-
-        <a href="{{ url_for('opcoes') }}" class="botao">
-            Ver por Caixas <i class="bi bi-chevron-right"></i>
-        </a>
-
     </div>
 
- <script>
-    const btn = document.querySelector(".acessibilidade");
-    const modal = document.getElementById("modalAcessibilidade");
-    const fechar = document.querySelector(".fechar");
-    const btnRestaurar = document.getElementById("btnRestaurar");
+    <script>
+        // Abrir e fechar modal
+        const btn = document.querySelector(".acessibilidade");
+        const modal = document.getElementById("modalAcessibilidade");
+        const fechar = document.querySelector(".fechar");
+        const btnRestaurar = document.getElementById("btnRestaurar");
 
-    btn.addEventListener("click", () => {
-        modal.style.display = "block";
-    });
+        btn.addEventListener("click", () => modal.style.display = "block");
+        fechar.addEventListener("click", () => modal.style.display = "none");
+        window.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
 
-    fechar.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
+        // Controle de tamanho de fonte
+        let nivelFonte = 1;
+        let tamanhosOriginais = new Map();
 
-    window.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            modal.style.display = "none";
+        function aumentarFonte() {
+            if (nivelFonte >= 3) return;
+            const elementos = Array.from(document.body.querySelectorAll("*"))
+                .filter(el => !el.closest("#modalAcessibilidade"));
+            elementos.forEach(el => {
+                const estilo = window.getComputedStyle(el);
+                const tamanho = parseFloat(estilo.fontSize);
+                if (!tamanhosOriginais.has(el)) tamanhosOriginais.set(el, tamanho);
+                el.style.fontSize = (tamanho * 1.1) + "px";
+            });
+            nivelFonte++;
+            btnRestaurar.style.display = "inline-block";
         }
-    });
 
-    let nivelFonte = 1; // começa no nível 1 (padrão)
-    let tamanhosOriginais = new Map(); // para guardar tamanhos iniciais
+        // Leitor de sites
+        let leitorAtivo = false;
+        const btnLeitor = document.getElementById("btnLeitor");
 
-    function aumentarFonte() {
-        if (nivelFonte >= 3) return; // se já está no nível máximo, não faz nada
-
-        const elementos = document.querySelectorAll("body *:not(#modalAcessibilidade *)");
-
-        elementos.forEach(el => {
-            const estilo = window.getComputedStyle(el);
-            const tamanho = parseFloat(estilo.fontSize);
-
-            // salva tamanho original uma única vez
-            if (!tamanhosOriginais.has(el)) {
-                tamanhosOriginais.set(el, tamanho);
-            }
-
-            el.style.fontSize = (tamanho * 1.1) + "px"; // aumenta 10%
+        btnLeitor.addEventListener("click", () => {
+            leitorAtivo = !leitorAtivo;
+            btnLeitor.textContent = leitorAtivo ? "Leitor Ativo" : "Leitor de sites";
+            if (leitorAtivo) btnRestaurar.style.display = "inline-block";
         });
 
-        nivelFonte++; // avança o nível
+        function lerTexto(texto, elemento) {
+            speechSynthesis.cancel();
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+            if (elemento) elemento.classList.add('highlight');
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            utterance.onend = () => { if (elemento) elemento.classList.remove('highlight'); };
+            speechSynthesis.speak(utterance);
+        }
 
-        // exibe o botão de restaurar se ainda não estiver visível
-        btnRestaurar.style.display = "inline-block";
-    }
-
-    function restaurarFonte() {
-        const elementos = document.querySelectorAll("body *:not(#modalAcessibilidade *)");
-
-        elementos.forEach(el => {
-            if (tamanhosOriginais.has(el)) {
-                el.style.fontSize = tamanhosOriginais.get(el) + "px"; // volta ao original
-            } else {
-                el.style.fontSize = ""; // limpa estilos adicionados
-            }
+        document.body.addEventListener("click", (e) => {
+            if (!leitorAtivo) return;
+            if (e.target.closest("#modalAcessibilidade")) return;
+            const texto = e.target.innerText || e.target.alt || e.target.value;
+            if (texto && texto.trim() !== "") lerTexto(texto.trim(), e.target);
         });
 
-        // reseta estado
-        nivelFonte = 1;
-        btnRestaurar.style.display = "none"; // esconde o botão novamente
-    }
+        // Modo daltônico
+        const btnDaltonismo = document.getElementById("btnDaltonismo");
+        const filtros = ["deuteranopia", "protanopia", "tritanopia", ""];
+        let indiceFiltro = 0;
 
-    async function atualizarContagem() {
-        try {
-            const resp = await fetch("/count");
-            const texto = await resp.text();
+        btnDaltonismo.addEventListener("click", () => {
+            const conteudo = document.getElementById("conteudo");
+            conteudo.classList.remove("deuteranopia", "protanopia", "tritanopia");
+            const filtroAtual = filtros[indiceFiltro];
+            if (filtroAtual) conteudo.classList.add(filtroAtual);
+            indiceFiltro = (indiceFiltro + 1) % filtros.length;
+            btnRestaurar.style.display = "inline-block";
+        });
 
-            const match = texto.match(/Tempo total: (\d+) minutos/);
-            if (match) {
-                let minutos = parseInt(match[1]);
+        // Restaurar configurações
+        function restaurarFonte() {
+            const elementos = Array.from(document.body.querySelectorAll("*"))
+                .filter(el => !el.closest("#modalAcessibilidade"));
+            elementos.forEach(el => {
+                if (tamanhosOriginais.has(el)) el.style.fontSize = tamanhosOriginais.get(el) + "px";
+                else el.style.fontSize = "";
+            });
+            nivelFonte = 1;
+            btnRestaurar.style.display = "none";
+            speechSynthesis.cancel();
+            leitorAtivo = false;
+            btnLeitor.textContent = "Leitor de sites";
+            const conteudo = document.getElementById("conteudo");
+            conteudo.classList.remove("deuteranopia", "protanopia", "tritanopia");
+            indiceFiltro = 0;
+        }
 
-                if (minutos === 0) {
-                    document.getElementById("total").textContent = "00:00";
-                } else {
+        // Atualizar contagem de tempo
+        async function atualizarContagem() {
+            try {
+                const resp = await fetch("/count");
+                const texto = await resp.text();
+                const match = texto.match(/Tempo total: (\d+) minutos/);
+                if (match) {
+                    let minutos = parseInt(match[1]);
                     let horas = Math.floor(minutos / 60);
-                    let restoMinutos = minutos % 60;
-                    let minutosFormatados = restoMinutos.toString().padStart(2, '0');
-                    document.getElementById("total").textContent = `${horas}:${minutosFormatados}`;
+                    let min = minutos % 60;
+                    let total = `${horas.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+                    document.getElementById("total").textContent = total;
                 }
-            }
-        } catch (err) {
-            console.error("Erro ao atualizar:", err);
+            } catch (err) { console.error("Erro ao atualizar:", err); }
         }
-    }
 
-    setInterval(atualizarContagem, 2000);
-    atualizarContagem();
-</script>
-
-
+        setInterval(atualizarContagem, 2000);
+        atualizarContagem();
+    </script>
 </body>
 
 </html>
