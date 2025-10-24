@@ -361,8 +361,8 @@
         margin: 100px auto;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         animation: aparecer 0.3s ease;
-        height: 850px;
-        
+        height: 900px;
+
 
     }
 
@@ -398,17 +398,14 @@
         border-radius: 12px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         width: 320px;
-        height: 90px;
+        height: 120px;
         font-size: 30px;
         font-family: 'Arvo', serif;
         color: #333;
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px;
+        padding: 30px 5px 20px 35px;
     }
 
     button:hover {
@@ -437,7 +434,7 @@
         background-color: #203e8b;
         color: white;
         position: absolute;
-        bottom: 30px;
+        bottom: 10px;
         font-size: 30px;
         height: 55px;
         padding: 10px;
@@ -455,18 +452,33 @@
         transition: filter 0.3s ease;
     }
 
-  
+
     .protanopia {
         filter: grayscale(0.3) contrast(1.2) saturate(0.7) hue-rotate(-30deg);
         transition: filter 0.3s ease;
     }
 
-    
+
     .tritanopia {
         filter: grayscale(0.3) contrast(1.2) saturate(0.7) hue-rotate(180deg);
         transition: filter 0.3s ease;
     }
 
-    #indicadoresAcessibilidade{
-        position: fixed; top: 10px; right: 10px; display: flex; gap: 5px;
+    .nivel-bolinhas {
+        display: flex;
+        gap: 4px;
+        position: relative;
+        right: 45%;
+        bottom: -65px;
+
     }
+
+    .bolinha {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: lightgray;
+
+    }
+
+   

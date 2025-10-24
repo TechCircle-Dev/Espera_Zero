@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        
+
         <div id="conteudo" class="conteudo">
             <h1 class="texto1">
                 Tempo Total <span class="de">de</span> Espera:
@@ -28,8 +28,6 @@
             </a>
         </div>
 
-
-
         <div class="acessibilidade" title="Abrir menu de acessibilidade"></div>
 
         <div id="modalAcessibilidade" class="modal">
@@ -39,29 +37,35 @@
 
                 <p class="filtros">Controle de Fonte</p>
                 <div class="grid2">
-                    <button onclick="aumentarFonte()">Aumentar Fonte</button>
+                    <button id="btnFonte">
+                        Aumentar Fonte
+                        <span class="nivel-bolinhas" id="bolinhasFonte"></span>
+                    </button>
                 </div>
 
                 <p class="filtros">Navegação do Site</p>
                 <div class="grid2">
-                    <button id="btnLeitor">Leitor de sites</button>
+                    <button id="btnLeitor">
+                        Leitor de textos
+                    </button>
                 </div>
 
                 <p class="filtros">Controle de Cores</p>
                 <div class="grid2">
-                    <button id="btnDaltonismo">Modo daltônico</button>
+                    <button id="btnDaltonismo">
+                        Modo daltônico
+                        <span class="nivel-bolinhas" id="bolinhasDaltonismo"></span>
+                    </button>
                 </div>
 
-                <button id="btnRestaurar" onclick="restaurarFonte()" style="display:none;">
+                <button id="btnRestaurar" onclick="restaurarConfiguracoes()" style="display:none;">
                     Restaurar
                 </button>
-
             </div>
         </div>
     </div>
 
     <script>
-        // Abrir e fechar modal
         const btn = document.querySelector(".acessibilidade");
         const modal = document.getElementById("modalAcessibilidade");
         const fechar = document.querySelector(".fechar");
@@ -71,12 +75,37 @@
         fechar.addEventListener("click", () => modal.style.display = "none");
         window.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
 
+        const totalNiveis = 3;
+
+        // Função para criar bolinhas dentro de um container
+        function criarBolinhas(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            for (let i = 0; i < totalNiveis; i++) {
+                const bolinha = document.createElement("div");
+                bolinha.classList.add("bolinha");
+                container.appendChild(bolinha);
+            }
+        }
+
+        // Atualiza visual das bolinhas de acordo com o nível
+        function atualizarBolinhas(containerId, nivelAtual) {
+            const bolinhas = document.querySelectorAll(`#${containerId} .bolinha`);
+            bolinhas.forEach((b, index) => {
+                b.style.backgroundColor = index < nivelAtual ? "gray" : "lightgray";
+            });
+        }
+
+        // Inicializa bolinhas para cada botão
+        criarBolinhas("bolinhasFonte");
+        criarBolinhas("bolinhasDaltonismo");
+
         // Controle de tamanho de fonte
-        let nivelFonte = 1;
+        let nivelFonte = 0;
         let tamanhosOriginais = new Map();
 
-        function aumentarFonte() {
-            if (nivelFonte >= 3) return;
+        document.getElementById("btnFonte").addEventListener("click", () => {
+            if (nivelFonte >= totalNiveis) return;
             const elementos = Array.from(document.body.querySelectorAll("*"))
                 .filter(el => !el.closest("#modalAcessibilidade"));
             elementos.forEach(el => {
@@ -87,7 +116,8 @@
             });
             nivelFonte++;
             btnRestaurar.style.display = "inline-block";
-        }
+            atualizarBolinhas("bolinhasFonte", nivelFonte);
+        });
 
         // Leitor de sites
         let leitorAtivo = false;
@@ -96,7 +126,7 @@
         btnLeitor.addEventListener("click", () => {
             leitorAtivo = !leitorAtivo;
             btnLeitor.textContent = leitorAtivo ? "Leitor Ativo" : "Leitor de sites";
-            if (leitorAtivo) btnRestaurar.style.display = "inline-block";
+            btnRestaurar.style.display = "inline-block";
         });
 
         function lerTexto(texto, elemento) {
@@ -128,24 +158,37 @@
             if (filtroAtual) conteudo.classList.add(filtroAtual);
             indiceFiltro = (indiceFiltro + 1) % filtros.length;
             btnRestaurar.style.display = "inline-block";
+
+            atualizarBolinhas("bolinhasDaltonismo", indiceFiltro);
         });
 
         // Restaurar configurações
-        function restaurarFonte() {
+        function restaurarConfiguracoes() {
+            // Fonte
             const elementos = Array.from(document.body.querySelectorAll("*"))
                 .filter(el => !el.closest("#modalAcessibilidade"));
             elementos.forEach(el => {
                 if (tamanhosOriginais.has(el)) el.style.fontSize = tamanhosOriginais.get(el) + "px";
                 else el.style.fontSize = "";
             });
-            nivelFonte = 1;
-            btnRestaurar.style.display = "none";
+            nivelFonte = 0;
+
+            // Leitor
             speechSynthesis.cancel();
             leitorAtivo = false;
             btnLeitor.textContent = "Leitor de sites";
+
+            // Daltonismo
             const conteudo = document.getElementById("conteudo");
             conteudo.classList.remove("deuteranopia", "protanopia", "tritanopia");
             indiceFiltro = 0;
+
+            // Reset bolinhas
+            atualizarBolinhas("bolinhasFonte", 0);
+            atualizarBolinhas("bolinhasLeitor", 0);
+            atualizarBolinhas("bolinhasDaltonismo", 0);
+
+            btnRestaurar.style.display = "none";
         }
 
         // Atualizar contagem de tempo
