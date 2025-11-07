@@ -3,24 +3,34 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  height: 100vh;
+  height: 97vh;
   margin: 0;
   background: #f4f4f4;
   padding-bottom: 20px;
 }
 
-.podio {
-  display: flex;
-  gap: 70px;
-  align-items: flex-end;
-  /* mantém caixas alinhadas pela base */
+h1 {
+  position: absolute;
+  top: 0;
+  right: 30px;
+  font-family: Arvo;
+
 }
 
-/* coluna = título + tempo + caixa */
+.podio {
+  display: flex;
+  gap: 30px;
+  align-items: flex-end;
+}
+
 .col {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: #ebebeb;
+  border-radius: 200px;
+  box-shadow: 0 1px 15px rgba(44, 42, 42, 0.2);
+  text-align: center;
 }
 
 .titulo {
@@ -35,17 +45,18 @@ body {
 }
 
 .caixa {
-  width: 180px;
-  background: #47525e;
-  min-height: 120px;
+  box-shadow: 0 1px 15px rgba(44, 42, 42, 0.2);
+  width: 150px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; 
-  border-radius: 4px 4px 0 0;
+  justify-content: flex-start;
+  border-radius: 200px;
   transition: height 0.5s, background 0.5s;
   position: relative;
   overflow: hidden;
+  bottom: -20px;
 }
 
 /* Imagem sempre no topo da caixa */
@@ -53,13 +64,15 @@ body {
   width: 60px;
   height: auto;
   border-radius: 4px;
-  margin-top: 40px; /* espaço do topo da caixa */
+  margin-top: 40px;
+  /* espaço do topo da caixa */
 }
 
 /* Texto sobreposto na imagem */
 .texto {
   position: absolute;
-  top: 30px;  /* Ajuste conforme altura da imagem */
+  top: 30px;
+  /* Ajuste conforme altura da imagem */
   color: #fff;
   font-weight: bold;
   text-align: center;
@@ -68,17 +81,29 @@ body {
 
 .texto2 {
   position: absolute;
-  top: 60px; /* Ajuste conforme necessário */
+  top: 60px;
   color: #fff;
   text-align: center;
   width: 100%;
   font-size: 24px;
   font-weight: bold;
+
 }
 
- .indicador-tempo {
-      width: 70px;
-      height: auto;
-      margin-top: 10px;
-      transition: all 0.3s ease;
+.indicador-tempo {
+  width: 70px;
+  height: auto;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  
+}
+
+
+
+.visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
     }

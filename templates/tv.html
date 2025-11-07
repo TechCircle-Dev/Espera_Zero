@@ -3,135 +3,382 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pódio de Caixas</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilotv.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <div class="podio">
-    <div class="col">
-      <div class="titulo"></div>
-      <!-- IMAGEM INDICADOR ACIMA DO TEMPO -->
-      <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}" alt="Indicador de tempo" />
-      <div class="tempo" id="tempo-normal">--</div>
-      <div class="caixa" id="normal">
-        <p class="texto">CAIXA</p>
-        <h1 class="texto2">1</h1>
-      </div>
-    </div>
+  <header role="banner">
+    <h1>Pódio de Caixas</h1>
+    <p class="visually-hidden">Painel com o ranking e tempos estimados por caixa</p>
+  </header>
 
-    <div class="col">
-      <div class="titulo"></div>
-      <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}" alt="Indicador de tempo" />
-      <div class="tempo" id="tempo-preferencial">--</div>
-      <div class="caixa" id="preferencial">
-        <img class="img2" src="{{ url_for('static', filename='img/c.png') }}" alt="Imagem" />
-      </div>
-    </div>
+  <main id="main" role="main">
+    <!-- Marca como ItemList para SEO/consumo por máquinas -->
+    <section class="podio" aria-label="Ranking de Caixas" itemscope itemtype="https://schema.org/ItemList">
+      <!-- Caixa normal (especial) -->
+      <article class="col" id="col-normal" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa normal">
+        <meta itemprop="position" content="1" />
+        <header class="titulo" role="heading" aria-level="2">
+          <h2 class="visually-hidden">Caixa Normal</h2>
+        </header>
 
-    <div class="col">
-      <div class="titulo"></div>
-      <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}" alt="Indicador de tempo" />
-      <div class="tempo" id="tempo-rapido">--</div>
-      <div class="caixa" id="rapido">
-        <img class="img2" src="{{ url_for('static', filename='img/r.png') }}" alt="Imagem" />
-      </div>
-    </div>
+        <figure class="indicador" aria-hidden="false">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+          <figcaption class="visually-hidden">Indicador de tempo da caixa normal</figcaption>
+        </figure>
 
-    <div class="col">
-      <div class="titulo"></div>
-      <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}" alt="Indicador de tempo" />
-      <div class="tempo" id="tempo-autoatendimento">--</div>
-      <div class="caixa" id="autoatendimento">
-        <img class="img2" src="{{ url_for('static', filename='img/a.png') }}" alt="Imagem" />
-      </div>
-    </div>
-  </div>
+        <!-- tempo exibido para leitores de tela via aria-live -->
+        <div class="tempo-wrapper">
+          <label for="tempo-normal" class="visually-hidden">Tempo da caixa normal</label>
+          <time id="tempo-normal" class="tempo" datetime="PT0M" aria-live="polite" itemprop="time"
+            role="status">--</time>
+        </div>
+
+        <div class="caixa" id="normal" data-tipo="normal" itemprop="item">
+          <p class="texto">CAIXA</p>
+          <h3 class="texto2" aria-hidden="true">1</h3>
+        </div>
+      </article>
+
+      <!-- Lista das outras caixas: preferencial, rápido, autoatendimentos -->
+      <!-- Cada article tem itemprop e position -->
+      <article class="col" id="col-preferencial" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa preferencial">
+        <meta itemprop="position" content="2" />
+        <header class="titulo" aria-hidden="true"></header>
+
+        <figure class="indicador" aria-hidden="false">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-preferencial" class="visually-hidden">Tempo da caixa preferencial</label>
+          <time id="tempo-preferencial" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="preferencial" data-tipo="preferencial" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/c.png') }}" alt="Ícone caixa preferencial" />
+        </div>
+      </article>
+
+      <article class="col" id="col-rapido" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa rápido">
+        <meta itemprop="position" content="3" />
+        <figure class="indicador">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-rapido" class="visually-hidden">Tempo da caixa rápido</label>
+          <time id="tempo-rapido" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="rapido" data-tipo="rapido" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/r.png') }}" alt="Ícone caixa rápido" />
+        </div>
+      </article>
+
+      <!-- autoatendimento1 -->
+      <article class="col" id="col-autoatendimento1" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa autoatendimentomática 1">
+        <meta itemprop="position" content="4" />
+        <figure class="indicador">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-autoatendimento1" class="visually-hidden">Tempo da caixa autoatendimentomática 1</label>
+          <time id="tempo-autoatendimento1" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="autoatendimento1" data-tipo="autoatendimento1" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/a.png') }}"
+            alt="Ícone caixa autoatendimentomática 1" />
+        </div>
+      </article>
+
+      <!-- autoatendimento2 -->
+      <article class="col" id="col-autoatendimento2" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa autoatendimentomática 2">
+        <meta itemprop="position" content="5" />
+        <figure class="indicador">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-autoatendimento2" class="visually-hidden">Tempo da caixa autoatendimentomática 2</label>
+          <time id="tempo-autoatendimento2" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="autoatendimento2" data-tipo="autoatendimento2" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/c.png') }}"
+            alt="Ícone caixa autoatendimentomática 2" />
+        </div>
+      </article>
+
+      <!-- autoatendimento3 -->
+      <article class="col" id="col-autoatendimento3" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa autoatendimentomática 3">
+        <meta itemprop="position" content="6" />
+        <figure class="indicador">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-autoatendimento3" class="visually-hidden">Tempo da caixa autoatendimentomática 3</label>
+          <time id="tempo-autoatendimento3" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="autoatendimento3" data-tipo="autoatendimento3" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/a.png') }}"
+            alt="Ícone caixa autoatendimentomática 3" />
+        </div>
+      </article>
+
+      <!-- autoatendimento4 -->
+      <article class="col" id="col-autoatendimento4" role="article" itemprop="itemListElement" itemscope
+        itemtype="https://schema.org/ListItem" aria-label="Caixa autoatendimentomática 4">
+        <meta itemprop="position" content="7" />
+        <figure class="indicador">
+          <img class="indicador-tempo" src="{{ url_for('static', filename='img/relogio2.png') }}"
+            alt="Indicador de tempo" />
+        </figure>
+
+        <div class="tempo-wrapper">
+          <label for="tempo-autoatendimento4" class="visually-hidden">Tempo da caixa autoatendimentomática 4</label>
+          <time id="tempo-autoatendimento4" class="tempo" datetime="PT0M" aria-live="polite">--</time>
+        </div>
+
+        <div class="caixa" id="autoatendimento4" data-tipo="autoatendimento4" itemprop="item">
+          <img class="img2" src="{{ url_for('static', filename='img/r.png') }}"
+            alt="Ícone caixa autoatendimentomática 4" />
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer role="contentinfo" class="visually-hidden">
+    <p>Painel de exibição de filas — gerado dinamicamente.</p>
+  </footer>
+
 
   <script>
-    const temposSimulados = {
-      preferencial: 0,
-      rapido: 0,
-      autoatendimento: 0,
-    };
+  const caixasIDs = [
+    'preferencial',
+    'rapido',
+    'autoatendimento1',
+    'autoatendimento2',
+    'autoatendimento3',
+    'autoatendimento4'
+  ];
 
-    function tempoAleatorio() {
-      const valores = [0, 5, 10, 15, 20, 25, 30];
-      return valores[Math.floor(Math.random() * valores.length)];
+  let vozMaria = null;
+
+  // Garantir que a voz Microsoft Maria seja carregada
+  function carregarVozMaria() {
+    const vozes = window.speechSynthesis.getVoices();
+    vozMaria = vozes.find(v => v.name === "Microsoft Maria - Portuguese (Brazil)");
+  }
+
+  window.speechSynthesis.onvoiceschanged = carregarVozMaria;
+  carregarVozMaria(); // Tenta carregar imediatamente caso já esteja disponível
+
+  function tempoAleatorio() {
+    const valores = [0, 5, 10, 15, 20, 25, 30];
+    return valores[Math.floor(Math.random() * valores.length)];
+  }
+
+  function atualizarImagemPorTempo(img, tempo) {
+    if (!img) return;
+    if (tempo <= 5) {
+      img.src = "{{ url_for('static', filename='img/rapido.png') }}";
+      img.alt = "Rápido";
+    } else if (tempo >= 25) {
+      img.src = "{{ url_for('static', filename='img/lento.png') }}";
+      img.alt = "Lento";
+    } else {
+      img.src = "{{ url_for('static', filename='img/relogio2.png') }}";
+      img.alt = "Tempo médio";
     }
+  }
 
-    function atualizarImagemPorTempo(img, tempo) {
-      if (tempo <= 5) {
-        img.src = "{{ url_for('static', filename='img/rapido.png') }}";
-      } else if (tempo >= 25) {
-        img.src = "{{ url_for('static', filename='img/lento.png') }}";
-      } else {
-        img.src = "{{ url_for('static', filename='img/relogio2.png') }}";
+  function formatDisplayTimeMinutes(minutos) {
+    if (minutos === 0) return '00:00';
+    const hh = Math.floor(minutos / 60);
+    const mm = minutos % 60;
+    return `${hh}:${mm.toString().padStart(2, '0')}`;
+  }
+
+  function formatTimeForDatetime(minutos) {
+    return `PT${Math.max(0, minutos)}M`;
+  }
+
+  function simularTempoAleatorio() {
+    caixasIDs.forEach((id) => {
+      const tempo = tempoAleatorio();
+      const caixa = document.getElementById(id);
+      const tempoEl = document.getElementById(`tempo-${id}`);
+      const imgIndicador = caixa && caixa.parentElement ? caixa.parentElement.querySelector('.indicador-tempo') : null;
+
+      const displayTime = tempo === 0 ? '00:00' : `0:${tempo.toString().padStart(2, '0')}`;
+      if (tempoEl) {
+        tempoEl.textContent = displayTime;
+        tempoEl.setAttribute('datetime', formatTimeForDatetime(tempo));
       }
-    }
 
-    function simularTempoAleatorio() {
-      ['preferencial', 'rapido', 'autoatendimento'].forEach((id) => {
-        const novoTempo = tempoAleatorio();
-        temposSimulados[id] = novoTempo;
+      atualizarImagemPorTempo(imgIndicador, tempo);
 
-        const caixa = document.getElementById(id);
-        const tempoSpan = document.getElementById(`tempo-${id}`);
-        const imgIndicador = caixa.parentElement.querySelector('.indicador-tempo');
-
-        const displayTime = novoTempo === 0 ? '00:00' : `0:${novoTempo.toString().padStart(2, '0')}`;
-        tempoSpan.textContent = displayTime;
-
-        // Atualiza imagem conforme tempo
-        atualizarImagemPorTempo(imgIndicador, novoTempo);
-
-        // Altura inversamente proporcional
-        const alturaMaxima = 400;
-        const alturaMinima = 120;
-        const altura = alturaMaxima - novoTempo * 8;
+      const alturaMaxima = 490;
+      const alturaMinima = 100;
+      const altura = alturaMaxima - tempo * 8;
+      if (caixa) {
+        caixa.style.transition = "height 0.8s ease";
         caixa.style.height = `${Math.max(alturaMinima, altura)}px`;
+      }
+    });
+
+    ordenarCaixasPorTempo();
+  }
+
+  async function atualizarCaixaNormal() {
+    try {
+      const resp = await fetch('/count');
+      const texto = await resp.text();
+      const match = texto.match(/Tempo total:\s*(\d+)\s*minutos/i);
+      if (!match) return;
+
+      const minutos = parseInt(match[1], 10);
+      const caixa = document.getElementById('normal');
+      const tempoSpan = document.getElementById('tempo-normal');
+      const imgIndicador = caixa && caixa.parentElement ? caixa.parentElement.querySelector('.indicador-tempo') : null;
+
+      const displayTime = formatDisplayTimeMinutes(minutos);
+      if (tempoSpan) {
+        tempoSpan.textContent = displayTime;
+        tempoSpan.setAttribute('datetime', formatTimeForDatetime(minutos));
+      }
+
+      const alturaMaxima = 400;
+      const alturaMinima = 120;
+      const altura = alturaMaxima - minutos * 2;
+      if (caixa) {
+        caixa.style.transition = "height 0.8s ease";
+        caixa.style.height = `${Math.max(alturaMinima, altura)}px`;
+      }
+
+      atualizarImagemPorTempo(imgIndicador, minutos);
+    } catch (err) {
+      console.error('Erro ao atualizar caixa normal:', err);
+    }
+  }
+
+  // 🔊 Anuncia o caixa mais rápido usando a voz Microsoft Maria
+  function anunciarCaixaMaisRapido() {
+    const tempos = [
+      { id: 'normal', el: document.getElementById('tempo-normal') },
+      { id: 'preferencial', el: document.getElementById('tempo-preferencial') },
+      { id: 'rapido', el: document.getElementById('tempo-rapido') },
+      { id: 'autoatendimento1', el: document.getElementById('tempo-autoatendimento1') },
+      { id: 'autoatendimento2', el: document.getElementById('tempo-autoatendimento2') },
+      { id: 'autoatendimento3', el: document.getElementById('tempo-autoatendimento3') },
+      { id: 'autoatendimento4', el: document.getElementById('tempo-autoatendimento4') }
+    ];
+
+    let caixaMaisRapido = null;
+    let menorTempo = Infinity;
+
+    tempos.forEach(({ id, el }) => {
+      if (!el || !el.textContent.includes(':')) return;
+      const partes = el.textContent.split(':');
+      const minutos = parseInt(partes[0]);
+      const segundos = parseInt(partes[1]);
+      const totalSegundos = minutos * 60 + segundos;
+      if (totalSegundos < menorTempo) {
+        menorTempo = totalSegundos;
+        caixaMaisRapido = id;
+      }
+    });
+
+    if (caixaMaisRapido && menorTempo <= 5 && vozMaria) {
+      const mensagem = new SpeechSynthesisUtterance(`O caixa ${caixaMaisRapido} está mais rápido`);
+      mensagem.lang = 'pt-BR';
+      mensagem.pitch = 1.1;
+      mensagem.rate = 2;
+      mensagem.voice = vozMaria;
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(mensagem);
+    }
+  }
+
+  function ordenarCaixasPorTempo() {
+    const podio = document.querySelector('.podio');
+    const artigos = Array.from(podio.querySelectorAll('.col'));
+
+    const posicoesIniciais = new Map();
+    artigos.forEach(col => {
+      const rect = col.getBoundingClientRect();
+      posicoesIniciais.set(col, rect);
+    });
+
+    const ordenar = artigos.sort((a, b) => {
+      const [ma, sa] = (a.querySelector('.tempo')?.textContent || '0:99').split(':').map(Number);
+      const [mb, sb] = (b.querySelector('.tempo')?.textContent || '0:99').split(':').map(Number);
+      const ta = ma * 60 + sa;
+      const tb = mb * 60 + sb;
+      return ta - tb;
+    });
+
+    ordenar.forEach(col => podio.appendChild(col));
+
+    ordenar.forEach(col => {
+      const rectFinal = col.getBoundingClientRect();
+      const rectInicial = posicoesIniciais.get(col);
+      const deltaX = rectInicial.left - rectFinal.left;
+      const deltaY = rectInicial.top - rectFinal.top;
+
+      col.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      col.style.transition = 'transform 0s';
+      requestAnimationFrame(() => {
+        col.style.transition = 'transform 0.8s ease';
+        col.style.transform = 'translate(0, 0)';
       });
-    }
+    });
 
-    async function atualizarCaixaNormal() {
-      try {
-        const resp = await fetch('/count');
-        const texto = await resp.text();
-
-        const match = texto.match(/Tempo total: (\d+) minutos/);
-        if (!match) return;
-
-        const minutos = parseInt(match[1]);
-
-        const caixa = document.getElementById('normal');
-        const imgIndicador = caixa.parentElement.querySelector('.indicador-tempo');
-        const tempoSpan = document.getElementById('tempo-normal');
-        const tituloImg = caixa.parentElement.querySelector('.titulo');
-
-        const displayTime = minutos === 0 ? '00:00' : `${Math.floor(minutos / 60)}:${(minutos % 60).toString().padStart(2, '0')}`;
-        tempoSpan.textContent = displayTime;
-
-        const alturaMaxima = 400;
-        const alturaMinima = 120;
-        const altura = alturaMaxima - minutos * 2;
-        caixa.style.height = `${Math.max(alturaMinima, altura)}px`;
-
-        atualizarImagemPorTempo(imgIndicador, minutos);
-
-        if (minutos === 0) {
-          tituloImg.src = "{{ url_for('static', filename='img/livre.png') }}";
-        } else {
-          tituloImg.src = "{{ url_for('static', filename='img/normal.png') }}";
-        }
-      } catch (err) {
-        console.error('Erro ao atualizar caixa normal:', err);
+    const cores = ["#b8cc6e","#f4d06f","#a2c5d8","#00687b","#ff7f50","#ea6851","#e71f1f"];
+    ordenar.forEach((col, index) => {
+      const caixa = col.querySelector('.caixa');
+      if (caixa) {
+        caixa.style.transition = "background-color 1s ease";
+        caixa.style.backgroundColor = cores[index] || "#e71f1f";
       }
-    }
+    });
+  }
 
-    setInterval(simularTempoAleatorio, 3000); // simulados trocam a cada 1s
-    setInterval(atualizarCaixaNormal, 10000); // normal atualiza a cada 5s
-    atualizarCaixaNormal(); // inicial
-  </script>
+  // Intervalos
+  setInterval(simularTempoAleatorio, 3000);
+  setInterval(atualizarCaixaNormal, 3000);
+  setInterval(anunciarCaixaMaisRapido, 3000);
+
+  // Inicialização
+  simularTempoAleatorio();
+  atualizarCaixaNormal();
+</script>
+
+
+
+
+
 </body>
 
 </html>

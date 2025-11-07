@@ -37,6 +37,58 @@
         </a>
     </div>
 
+    <header>
+        <div class="acessibilidade" title="Abrir menu de acessibilidade"></div>
+        <button id="botaoLibras" class="botao-vermelho"></button>
+    </header>
+
+    <main class="container">
+        <aside aria-label="Plugin de acessibilidade">
+            <div vw class="enabled">
+                <div vw-access-button class="active"></div>
+                <div vw-plugin-wrapper>
+                    <div class="vw-plugin-top-wrapper"></div>
+                </div>
+            </div>
+        </aside>
+
+
+
+        <div id="modalAcessibilidade" class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+            <div class="modal-conteudo">
+                <span class="fechar" title="Fechar" role="button" aria-label="Fechar">&times;</span>
+                <h2 id="tituloModal">Acessibilidades</h2>
+
+                <p class="filtros">Controle de Fonte</p>
+                <div class="grid2">
+                    <button id="btnFonte">
+                        Aumentar Fonte
+                        <span class="nivel-bolinhas" id="bolinhasFonte"></span>
+                    </button>
+                </div>
+
+                <p class="filtros">Navegação do Site</p>
+                <div class="grid2">
+                    <button id="btnLeitor">Leitor de textos</button>
+                </div>
+
+                <p class="filtros">Controle de Cores</p>
+                <div class="grid2">
+                    <button id="btnDaltonismo">
+                        Modo daltônico
+                        <span class="nivel-bolinhas" id="bolinhasDaltonismo"></span>
+                    </button>
+                </div>
+
+                <button id="btnRestaurar" onclick="restaurarConfiguracoes()" style="display:none;">
+                    Restaurar
+                </button>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
         async function atualizarContagem() {
             try {
@@ -77,6 +129,128 @@
         setInterval(atualizarContagem, 2000);
         atualizarContagem();
 
+        const btn = document.querySelector(".acessibilidade");
+        const modal = document.getElementById("modalAcessibilidade");
+        const fechar = document.querySelector(".fechar");
+        const btnRestaurar = document.getElementById("btnRestaurar");
+
+        btn.addEventListener("click", () => modal.style.display = "block");
+        fechar.addEventListener("click", () => modal.style.display = "none");
+        window.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
+
+        const totalNiveis = 3;
+
+        function criarBolinhas(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            for (let i = 0; i < totalNiveis; i++) {
+                const bolinha = document.createElement("div");
+                bolinha.classList.add("bolinha");
+                container.appendChild(bolinha);
+            }
+        }
+
+        function atualizarBolinhas(containerId, nivelAtual) {
+            const bolinhas = document.querySelectorAll(`#${containerId} .bolinha`);
+            bolinhas.forEach((b, index) => {
+                b.style.backgroundColor = index < nivelAtual ? "gray" : "lightgray";
+            });
+        }
+
+        criarBolinhas("bolinhasFonte");
+        criarBolinhas("bolinhasDaltonismo");
+
+        let nivelFonte = 0;
+        let tamanhosOriginais = new Map();
+
+        document.getElementById("btnFonte").addEventListener("click", () => {
+            if (nivelFonte >= totalNiveis) return;
+            const elementos = Array.from(document.body.querySelectorAll("*"))
+                .filter(el => !el.closest("#modalAcessibilidade"));
+            elementos.forEach(el => {
+                const estilo = window.getComputedStyle(el);
+                const tamanho = parseFloat(estilo.fontSize);
+                if (!tamanhosOriginais.has(el)) tamanhosOriginais.set(el, tamanho);
+                el.style.fontSize = (tamanho * 1.1) + "px";
+            });
+            nivelFonte++;
+            btnRestaurar.style.display = "inline-block";
+            atualizarBolinhas("bolinhasFonte", nivelFonte);
+        });
+
+        let leitorAtivo = false;
+        const btnLeitor = document.getElementById("btnLeitor");
+
+        btnLeitor.addEventListener("click", () => {
+            leitorAtivo = !leitorAtivo;
+            btnLeitor.textContent = leitorAtivo ? "Leitor Ativo" : "Leitor de textos";
+            btnRestaurar.style.display = "inline-block";
+        });
+
+        function lerTexto(texto, elemento) {
+            speechSynthesis.cancel();
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+            if (elemento) elemento.classList.add('highlight');
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            utterance.onend = () => { if (elemento) elemento.classList.remove('highlight'); };
+            speechSynthesis.speak(utterance);
+        }
+
+        document.body.addEventListener("click", (e) => {
+            if (!leitorAtivo) return;
+            if (e.target.closest("#modalAcessibilidade")) return;
+            let texto = e.target.innerText || e.target.alt || e.target.value;
+            if (texto && texto.trim() !== "") lerTexto(texto.trim(), e.target);
+        });
+
+        const btnDaltonismo = document.getElementById("btnDaltonismo");
+        const filtros = ["deuteranopia", "protanopia", "tritanopia", ""];
+        let indiceFiltro = 0;
+
+        btnDaltonismo.addEventListener("click", () => {
+            const conteudo = document.body;
+            conteudo.classList.remove("deuteranopia", "protanopia", "tritanopia");
+            const filtroAtual = filtros[indiceFiltro];
+            if (filtroAtual) conteudo.classList.add(filtroAtual);
+            indiceFiltro = (indiceFiltro + 1) % filtros.length;
+            btnRestaurar.style.display = "inline-block";
+            atualizarBolinhas("bolinhasDaltonismo", indiceFiltro);
+        });
+
+        function restaurarConfiguracoes() {
+            const elementos = Array.from(document.body.querySelectorAll("*"))
+                .filter(el => !el.closest("#modalAcessibilidade"));
+            elementos.forEach(el => {
+                if (tamanhosOriginais.has(el)) el.style.fontSize = tamanhosOriginais.get(el) + "px";
+                else el.style.fontSize = "";
+            });
+            nivelFonte = 0;
+            speechSynthesis.cancel();
+            leitorAtivo = false;
+            btnLeitor.textContent = "Leitor de textos";
+            document.body.classList.remove("deuteranopia", "protanopia", "tritanopia");
+            indiceFiltro = 0;
+            atualizarBolinhas("bolinhasFonte", 0);
+            atualizarBolinhas("bolinhasDaltonismo", 0);
+            btnRestaurar.style.display = "none";
+        }
+
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const botaoCustom = document.getElementById('botaoLibras');
+            if (!botaoCustom) return;
+            botaoCustom.addEventListener('click', function () {
+                const tentarAtivar = setInterval(() => {
+                    const botaoOriginal = document.querySelector('[vw-access-button]');
+                    if (botaoOriginal) {
+                        clearInterval(tentarAtivar);
+                        botaoOriginal.click();
+                    }
+                }, 500);
+            });
+        });
     </script>
 </body>
 
